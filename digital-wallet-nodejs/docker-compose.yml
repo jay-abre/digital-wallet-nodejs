@@ -1,16 +1,46 @@
 version: '3.8'
 
 services:
+  service1:
+    build:
+      context: ./user-service
+    ports:
+      - "3001:3000"
+    depends_on:
+      - mongodb
+    networks:
+      - mynetwork
+    environment:
+      MONGODB_URI: mongodb://root:example@mongodb:27017
+      JWT_SECRET: your_jwt_secret
+
+  # service2:
+  #   build:
+  #     context: ./service2
+  #   ports:
+  #     - "3002:3000"
+  #   depends_on:
+  #     - mongodb
+  #   networks:
+  #     - mynetwork
+  #   environment:
+  #     MONGODB_URI: mongodb://root:example@mongodb:27017
+  #     JWT_SECRET: your_jwt_secret
+
   mongodb:
     image: mongo:latest
-    container_name: mongodb
     ports:
       - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - mynetwork
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-    volumes:
-      - mongo-data:/data/db
+
+networks:
+  mynetwork:
 
 volumes:
   mongo-data:
