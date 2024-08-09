@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 import User from '../models/userModel';
 import validator from '../utils/validator';
 import logger from '../utils/logger';
@@ -21,6 +22,11 @@ const generateToken = (userId: string): string => {
   return jwt.sign({ id: userId }, secret, { expiresIn: '1d' });
 };
 
+const validatePasswordComplexity = (password: string): boolean => {
+  const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+  return regex.test(password);
+};
+
 export const register = async (req: UserRequest, res: Response): Promise<void> => {
   try {
     const { error } = validator.validateUser(req.body);
@@ -31,13 +37,21 @@ export const register = async (req: UserRequest, res: Response): Promise<void> =
 
     const { email, password, firstName, lastName } = req.body;
 
+    // Validate password complexity
+    if (!validatePasswordComplexity(password)) {
+      res.status(400).json({ error: 'Password must be at least 8 characters long and include uppercase letters, lowercase letters, numbers, and special characters.' });
+      return;
+    }
+
     let user = await User.findOne({ email });
     if (user) {
       res.status(400).json({ error: 'User already exists' });
       return;
     }
 
-    user = new User({ email, password, firstName, lastName });
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    user = new User({ email, password: hashedPassword, firstName, lastName });
     await user.save();
 
     const token = generateToken(user._id);

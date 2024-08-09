@@ -1,5 +1,6 @@
 {
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "@types/express": "^4.17.21",
     "cz-conventional-changelog": "^3.3.0"
   },
@@ -7,5 +8,8 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.1"
   }
 }

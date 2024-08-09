@@ -24,14 +24,8 @@ const errorHandler = (err: MongoError, req: Request, res: Response, next: NextFu
     return;
   }
 
-  // JWT authentication error
-  if (err.name === 'UnauthorizedError') {
-    res.status(401).json({ error: 'Invalid token' });
-    return;
-  }
-
-  // Default to 500 server error
-  res.status(500).json({ error: 'Internal Server Error' });
+  // Generic error handler
+  res.status(500).json({ error: 'An unexpected error occurred.' });
 };
 
 export default errorHandler;
