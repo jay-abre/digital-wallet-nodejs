@@ -25,21 +25,21 @@ const app: Application = express();
 mongoose.connect(process.env.MONGODB_URI as string, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useCreateIndex: true, // Add this line to address the deprecation warning
+  useCreateIndex: true, 
 })
 .then(() => console.log('Connected to MongoDB'))
 .catch(err => {
   console.error('MongoDB connection error:', err);
-  process.exit(1); // Exit the process if MongoDB connection fails
+  process.exit(1); 
 });
 
 app.use(cors());
 app.use(express.json());
 
-// Use auth routes
+
 app.use('/api/auth', authRoutes);
 
-// Error handling middleware
+
 app.use(errorMiddleware);
 
 const PORT = process.env.PORT || 3000;

@@ -1,7 +1,7 @@
 import { MongoClient } from 'mongodb';
 
 async function createAdminUser() {
-  const uri = 'mongodb://localhost:27017'; // Replace with your MongoDB connection string
+  const uri = 'mongodb://localhost:27017'; 
   const client = new MongoClient(uri);
 
   try {
