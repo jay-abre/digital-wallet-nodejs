@@ -8,17 +8,12 @@ import path from 'path';
 
 // Load environment variables from .env file
 const envPath = path.resolve(__dirname, '../../.env');
-console.log(`Loading environment variables from: ${envPath}`);
 dotenv.config({ path: envPath });
 
 // Manually set environment variables if not loaded
 if (!process.env.MONGODB_URI) {
   process.env.MONGODB_URI = 'mongodb://root:example@localhost:27017';
 }
-
-// Log the MONGODB_URI and JWT_SECRET to verify they're being read correctly
-console.log('MONGODB_URI:', process.env.MONGODB_URI);
-console.log('JWT_SECRET:', process.env.JWT_SECRET);
 
 const app: Application = express();
 

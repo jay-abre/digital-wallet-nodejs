@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import User from '../models/userModel';
-import jwt from 'jsonwebtoken';
 import validator from '../utils/validator';
 import logger from '../utils/logger';
 
@@ -29,7 +28,6 @@ const validatePasswordComplexity = (password: string): boolean => {
 };
 
 export const register = async (req: UserRequest, res: Response): Promise<void> => {
-export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { error } = validator.validateUser(req.body);
     if (error) {
@@ -74,7 +72,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     const { email, password } = req.body;
-
+    
     const user = await User.findOne({ email });
     if (!user) {
       res.status(400).json({ error: 'Invalid email or password' });
