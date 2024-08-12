@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { CallbackError, Document, Schema } from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 interface IWallet {
@@ -35,6 +35,8 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
     unique: true,
     lowercase: true,
     trim: true,
+    match: [/\S+@\S+\.\S+/, 'is invalid'], // Email format validation
+    index: true, // Add index for faster queries
   },
   password: {
     type: String,
@@ -60,8 +62,12 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
 // Hash password before saving
 userSchema.pre<IUser>('save', async function(next) {
   if (!this.isModified('password')) return next();
-  this.password = await bcrypt.hash(this.password, 12);
-  next();
+  try {
+    this.password = await bcrypt.hash(this.password, 12);
+    next();
+  } catch (err) {
+    next(err as CallbackError);
+  }
 });
 
 // Method to check password

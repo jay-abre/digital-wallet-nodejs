@@ -1,15 +1,22 @@
 {
   "devDependencies": {
+<<<<<<< HEAD
     "@types/bcrypt": "^5.0.2",
     "@types/express": "^4.17.21",
+=======
+    "commitizen": "^4.3.0",
+>>>>>>> feature/validator
     "cz-conventional-changelog": "^3.3.0"
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+<<<<<<< HEAD
   },
   "dependencies": {
     "bcrypt": "^5.1.1"
+=======
+>>>>>>> feature/validator
   }
 }

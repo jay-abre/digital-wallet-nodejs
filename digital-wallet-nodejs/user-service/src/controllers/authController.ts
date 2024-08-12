@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import User from '../models/userModel';
+import jwt from 'jsonwebtoken';
 import validator from '../utils/validator';
 import logger from '../utils/logger';
 
@@ -28,6 +29,7 @@ const validatePasswordComplexity = (password: string): boolean => {
 };
 
 export const register = async (req: UserRequest, res: Response): Promise<void> => {
+export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { error } = validator.validateUser(req.body);
     if (error) {
@@ -54,7 +56,7 @@ export const register = async (req: UserRequest, res: Response): Promise<void> =
     user = new User({ email, password: hashedPassword, firstName, lastName });
     await user.save();
 
-    const token = generateToken(user._id);
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, { expiresIn: '1d' });
 
     res.status(201).json({ token, user: { id: user._id, email: user.email, firstName: user.firstName, lastName: user.lastName } });
   } catch (error) {
@@ -63,7 +65,7 @@ export const register = async (req: UserRequest, res: Response): Promise<void> =
   }
 };
 
-export const login = async (req: UserRequest, res: Response): Promise<void> => {
+export const login = async (req: Request, res: Response): Promise<void> => {
   try {
     const { error } = validator.validateLogin(req.body);
     if (error) {
@@ -85,7 +87,7 @@ export const login = async (req: UserRequest, res: Response): Promise<void> => {
       return;
     }
 
-    const token = generateToken(user._id);
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, { expiresIn: '1d' });
 
     res.json({ token, user: { id: user._id, email: user.email, firstName: user.firstName, lastName: user.lastName } });
   } catch (error) {

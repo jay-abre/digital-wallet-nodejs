@@ -75,6 +75,10 @@ const validator = {
 
   validateEmail(email: string): ValidationResult<string> {
     return Joi.string().email().required().validate(email);
+  },
+
+  validateRegisterInput(user: User): ValidationResult<User> {
+    return this.validateUser(user);
   }
 };
 
