@@ -22,14 +22,9 @@
         "winston": "^3.3.3"
     },
     "devDependencies": {
-<<<<<<< HEAD
         "@types/bcryptjs": "^2.4.6",
         "@types/cors": "^2.8.17",
         "@types/jsonwebtoken": "^9.0.6",
-=======
-        "commitizen": "^4.3.0",
-        "cz-conventional-changelog": "^3.3.0",
->>>>>>> feature/validator
         "jest": "^27.0.6",
         "nodemon": "^2.0.7",
         "supertest": "^6.1.3"
