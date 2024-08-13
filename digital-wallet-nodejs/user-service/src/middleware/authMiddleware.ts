@@ -1,8 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
+import { config } from '../config/config';
+
+interface UserPayload {
+  id: string;
+  role: string;
+}
 
 interface AuthenticatedRequest extends Request {
-  user?: string | JwtPayload;
+  user?: UserPayload;
 }
 
 export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -11,12 +17,8 @@ export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: N
     return res.status(401).json({ error: 'Access denied, no token provided' });
   }
 
-  if (!process.env.JWT_SECRET) {
-    return res.status(500).json({ error: 'Internal server error, missing JWT secret' });
-  }
-
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET as string);
+    const decoded = jwt.verify(token, config.JWT_SECRET) as UserPayload;
     req.user = decoded;
     next();
   } catch (error) {

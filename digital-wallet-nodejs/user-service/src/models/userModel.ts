@@ -6,6 +6,7 @@ interface IUser extends Document {
   password: string;
   firstName: string;
   lastName: string;
+  role: 'super admin' | 'admin' | 'user';
   checkPassword(candidatePassword: string): Promise<boolean>;
 }
 
@@ -40,6 +41,11 @@ const userSchema: Schema<IUser> = new mongoose.Schema({
   lastName: {
     type: String,
     required: true,
+  },
+  role: {
+    type: String,
+    enum: ['super admin', 'admin', 'user'],
+    default: 'user',
   },
   wallet: walletSchema,
 }, { timestamps: true });
