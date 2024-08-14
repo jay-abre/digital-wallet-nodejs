@@ -2,7 +2,8 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import authRoutes from './routes/authRoutes'; // Import the auth routes
+import authRoutes from './routes/authRoutes';
+import userRoutes from './routes/userRoutes';
 import errorMiddleware from './middleware/errorMiddleware';
 import path from 'path';
 
@@ -20,20 +21,19 @@ const app: Application = express();
 mongoose.connect(process.env.MONGODB_URI as string, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  useCreateIndex: true, 
+  useCreateIndex: true,
 })
-.then(() => console.log('Connected to MongoDB'))
-.catch(err => {
-  console.error('MongoDB connection error:', err);
-  process.exit(1); 
-});
+  .then(() => console.log('Connected to MongoDB'))
+  .catch(err => {
+    console.error('MongoDB connection error:', err);
+    process.exit(1);
+  });
 
 app.use(cors());
 app.use(express.json());
 
-
 app.use('/api/auth', authRoutes);
-
+//app.use('/api/users', userRoutes);
 
 app.use(errorMiddleware);
 

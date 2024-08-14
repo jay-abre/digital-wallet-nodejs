@@ -51,12 +51,16 @@ export const register = async (req: UserRequest, res: Response): Promise<void> =
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    user = new User({ email, password: hashedPassword, firstName, lastName });
+    // Check if this is the first user
+    const userCount = await User.countDocuments();
+    const role = userCount === 0 ? 'super admin' : 'user';
+
+    user = new User({ email, password: hashedPassword, firstName, lastName, role });
     await user.save();
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, { expiresIn: '1d' });
 
-    res.status(201).json({ token, user: { id: user._id, email: user.email, firstName: user.firstName, lastName: user.lastName } });
+    res.status(201).json({ token, user: { id: user._id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role } });
   } catch (error) {
     logger.error('Error in user registration:', error);
     res.status(500).json({ error: 'Internal server error' });
@@ -72,7 +76,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
     }
 
     const { email, password } = req.body;
-    
+
     const user = await User.findOne({ email });
     if (!user) {
       res.status(400).json({ error: 'Invalid email or password' });
@@ -87,7 +91,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, { expiresIn: '1d' });
 
-    res.json({ token, user: { id: user._id, email: user.email, firstName: user.firstName, lastName: user.lastName } });
+    res.json({ token, user: { id: user._id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role } });
   } catch (error) {
     logger.error('Error in user login:', error);
     res.status(500).json({ error: 'Internal server error' });

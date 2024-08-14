@@ -1,27 +1,26 @@
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
-import { config } from '../config/config';
+import { rolePermissions } from '../config/roles';
 
-interface UserPayload {
-  id: string;
-  role: string;
-}
+export const checkRole = (requiredPermissions: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
 
-interface AuthenticatedRequest extends Request {
-  user?: UserPayload;
-}
+    if (!user) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
 
-export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
-  const token = req.header('Authorization')?.replace('Bearer ', '');
-  if (!token) {
-    return res.status(401).json({ error: 'Access denied, no token provided' });
-  }
+    const userPermissions = rolePermissions[user.role];
 
-  try {
-    const decoded = jwt.verify(token, config.JWT_SECRET) as UserPayload;
-    req.user = decoded;
+    if (!userPermissions) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+
+    const hasPermission = requiredPermissions.every(permission => userPermissions.includes(permission));
+
+    if (!hasPermission) {
+      return res.status(403).json({ message: 'Forbidden' });
+    }
+
     next();
-  } catch (error) {
-    res.status(400).json({ error: 'Invalid token' });
-  }
+  };
 };
