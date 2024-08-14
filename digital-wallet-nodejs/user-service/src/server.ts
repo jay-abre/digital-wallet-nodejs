@@ -6,6 +6,7 @@ import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
 import errorMiddleware from './middleware/errorMiddleware';
 import path from 'path';
+import kycRoutes from './routes/kycRoutes';
 
 // Load environment variables from .env file
 const envPath = path.resolve(__dirname, '../../.env');
@@ -34,6 +35,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/kyc', kycRoutes);
 
 app.use(errorMiddleware);
 
