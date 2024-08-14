@@ -1,9 +1,21 @@
 import { Request, Response, NextFunction } from 'express';
 import { rolePermissions } from '../config/roles';
 
+interface UserWithRole {
+  role: string;
+}
+
+declare global {
+  namespace Express {
+    interface Request {
+      user?: UserWithRole;
+    }
+  }
+}
+
 export const checkRole = (requiredPermissions: string[]) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const user = req.user;
+    const user = req.user as UserWithRole | undefined;
 
     if (!user) {
       return res.status(401).json({ message: 'Unauthorized' });
