@@ -1,3 +1,4 @@
+// src/types/express.d.ts
 import 'express';
 
 declare global {
@@ -5,11 +6,9 @@ declare global {
     interface User {
       id: string;
       role: string;
-      // Add any other properties your user object might have
     }
 
     interface UserWithRole extends User {
-      // Add any additional properties specific to UserWithRole
     }
 
     interface Request {

@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt';
 import User from '../models/userModel';
 import validator from '../utils/validator';
 import logger from '../utils/logger';
+import { addToBlacklist } from '../utils/tokenBlacklist';
 
 interface UserRequest extends Request {
   body: {
@@ -95,5 +96,19 @@ export const login = async (req: Request, res: Response): Promise<void> => {
   } catch (error) {
     logger.error('Error in user login:', error);
     res.status(500).json({ error: 'Internal server error' });
+  }
+
+};
+
+
+export const logout = async (req: Request, res: Response) => {
+  try {
+    const token = req.header('Authorization')?.replace('Bearer ', '');
+    if (token) {
+      addToBlacklist(token);
+    }
+    res.status(200).json({ message: 'Logout successful' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
