@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import User from '../models/userModel';
 import validator from '../utils/validator';
-import logger from '../utils/logger';
+import logger from '../../../shared/logger';
 import { addToBlacklist } from '../utils/tokenBlacklist';
 
 interface UserRequest extends Request {

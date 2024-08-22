@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import User from '../models/userModel';
-import logger from '../utils/logger';
+import logger from '../../../shared/logger'
 
 export const assignRole = async (req: Request, res: Response): Promise<void> => {
   try {

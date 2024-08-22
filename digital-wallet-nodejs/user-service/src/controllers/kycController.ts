@@ -1,6 +1,6 @@
 import { Response, Request } from 'express';
 import KYC from '../models/kycModels';
-import { MulterRequest } from '../types/types';
+import { MulterRequest } from '@/types/types';
 
 export const submitKYC = async (req: MulterRequest, res: Response) => {
   try {
