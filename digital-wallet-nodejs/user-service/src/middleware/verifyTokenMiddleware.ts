@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel';
 import logger from '../../../shared/logger'
-import { UserWithRole } from '@/types/types';
+import { UserWithRole } from '../../types/types';
 
 export const verifyToken = async (req: Request, res: Response, next: NextFunction) => {
   const token = req.header('Authorization')?.replace('Bearer ', '');

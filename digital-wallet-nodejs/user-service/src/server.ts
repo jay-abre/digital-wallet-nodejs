@@ -2,11 +2,14 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
+import path from 'path';
+
+
+// Import routes from different services
 import authRoutes from './routes/authRoutes';
 import userRoutes from './routes/userRoutes';
-import errorMiddleware from './middleware/errorMiddleware';
-import path from 'path';
 import kycRoutes from './routes/kycRoutes';
+import walletRoutes from '../../account-service/routes/walletRoutes'; // Import account service routes
 
 // Load environment variables from .env file
 const envPath = path.resolve(__dirname, '../../.env');
@@ -19,6 +22,7 @@ if (!process.env.MONGODB_URI) {
 
 const app: Application = express();
 
+// Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI as string, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -30,13 +34,18 @@ mongoose.connect(process.env.MONGODB_URI as string, {
     process.exit(1);
   });
 
+// Middleware setup
 app.use(cors());
 app.use(express.json());
 
+// Use imported routes
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/kyc', kycRoutes);
+app.use('/api/wallets', walletRoutes); // Add route for account service
 
+// Error handling middleware
+import errorMiddleware from './middleware/errorMiddleware';
 app.use(errorMiddleware);
 
 const PORT = process.env.PORT || 3000;

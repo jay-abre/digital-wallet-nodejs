@@ -13,7 +13,7 @@
     }
   },
   "include": ["src/**/*",
-    "./src/types"
+    "./types"
   ],
   "exclude": ["node_modules", "dist"]
 }
