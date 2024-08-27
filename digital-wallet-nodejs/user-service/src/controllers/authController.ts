@@ -15,13 +15,15 @@ interface UserRequest extends Request {
   }
 }
 
-const generateToken = (userId: string): string => {
+const generateToken = (userId: string, role: string): string => {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
     throw new Error('JWT_SECRET is not defined');
   }
-  return jwt.sign({ id: userId }, secret, { expiresIn: '1d' });
+  return jwt.sign({ id: userId, role }, secret, { expiresIn: '1d' });
 };
+
+
 
 const validatePasswordComplexity = (password: string): boolean => {
   const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
@@ -59,7 +61,8 @@ export const register = async (req: UserRequest, res: Response): Promise<void> =
     user = new User({ email, password: hashedPassword, firstName, lastName, role });
     await user.save();
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, { expiresIn: '1d' });
+    const token = generateToken(user._id, user.role);
+
 
     res.status(201).json({ token, user: { id: user._id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role } });
   } catch (error) {
@@ -90,7 +93,8 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET as string, { expiresIn: '1d' });
+    const token = generateToken(user._id, user.role);
+
 
     res.json({ token, user: { id: user._id, email: user.email, firstName: user.firstName, lastName: user.lastName, role: user.role } });
   } catch (error) {

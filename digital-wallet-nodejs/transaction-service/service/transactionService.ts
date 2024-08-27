@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import Transaction from '../model/transaction';
-import Wallet from '../../account-service/model/wallet';
+import Wallet from '../../account-service/src/model/wallet';
 import logger from '../../shared/logger';
 
 interface CreateTransactionParams {

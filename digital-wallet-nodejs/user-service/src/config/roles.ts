@@ -5,7 +5,7 @@ export const roles = {
 };
 
 export const rolePermissions = {
-  [roles.SUPER_ADMIN]: ['assignRoles', 'manageContent'],
-  [roles.ADMIN]: ['manageContent'],
-  [roles.USER]: ['viewContent'],
+  [roles.SUPER_ADMIN]: ['assignRoles', 'manageContent', 'createWallet'],
+  [roles.ADMIN]: ['manageContent', 'createWallet'],
+  [roles.USER]: ['viewContent', 'createWallet'], // Ensure 'createWallet' is included
 };
