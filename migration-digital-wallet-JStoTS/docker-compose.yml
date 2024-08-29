@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  minio:
+    image: minio/minio
+    container_name: minio-digital-wallet
+    environment:
+      MINIO_ROOT_USER: user
+      MINIO_ROOT_PASSWORD: password
+    volumes:
+      - ./data/minio:/data
+    ports:
+      - "9000:9000"
+    command: server /data
+    networks:
+      - my_project_network
+
+  mailhog:
+    image: mailhog/mailhog
+    container_name: mailhog
+    ports:
+      - "1025:1025"  # SMTP server
+      - "8025:8025"  # Web UI
+    networks:
+      - my_project_network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app
+    depends_on:
+      - minio
+      - mailhog
+    networks:
+      - my_project_network
+    ports:
+      - "3000:3000"
+    environment:
+      - EMAIL_HOST=mailhog
+      - EMAIL_PORT=1025
+
+networks:
+  my_project_network:
+    driver: bridge
